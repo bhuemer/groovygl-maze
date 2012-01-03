@@ -1,3 +1,12 @@
+This is a piece of coursework that I had to submit at university as part
+of the programming course that I needed to attend in the very first term
+(Principles of Programming:
+http://www-typo3.cs.ucl.ac.uk/students/syllabus/undergrad/1007_principles_of_programming/).
+
+The task was to generate a two-dimensional maze in Groovy using the 
+Graphics API provided by Swing / AWT. However, instead I created a 
+three-dimensional one using JOGL.
+
 == Howto use / start the application:
 - For your convenience, I've chosen to provide an Ant build file so that
 it's rather easy to build this project on any machine. Just enter the
