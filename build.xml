@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="COMP1007 - Groovy coursework" default="package">
+
+    <!-- Misc property definitions ======================== -->
+
+    <!-- Introduce properties for some directories of this project. -->
+    <property name="project.src" value="${basedir}/src" />
+    <property name="project.bin" value="${basedir}/bin" />
+    <property name="project.lib" value="${basedir}/lib" />
+
+    <property name="project.jar" value="${basedir}/coursework.jar" />
+    <property name="project.mainclass" value="uk.ac.ucl.cs.groovy.coursework.Application" />
+
+    <!-- Classpath and Path definitions =================== -->
+
+    <path id="groovy.classpath">
+        <pathelement location="${project.lib}/groovy/groovy-all-1.6.5.jar" />
+    </path>
+
+    <path id="jogl.classpath">
+        <pathelement location="${project.lib}/jogl/gluegen-rt.jar" />
+        <pathelement location="${project.lib}/jogl/jogl.jar" />
+    </path>
+
+    <path id="compilation.classpath">
+        <path refid="groovy.classpath" />
+        <path refid="jogl.classpath" />
+    </path>
+
+    <path id="runtime.classpath">
+        <path refid="compilation.classpath" />
+        <pathelement location="${project.jar}" />
+    </path>
+
+    <!-- Task definitions ================================= -->
+
+    <!-- Import the groovy compiler task. -->
+    <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc"
+                                classpathref="groovy.classpath"/>
+
+    <!-- Target definitions =============================== -->
+
+    <!-- This target ensures that the output directory exists. -->
+    <target name="clean">
+        <delete dir="${project.bin}" />
+        <delete file="${project.jar}" />
+        
+        <mkdir dir="${project.bin}" />
+    </target>
+
+    <!-- This target compiles all the necessary Groovy classes. -->
+    <target name="groovyc.compile" depends="clean">
+        <groovyc destdir="${project.bin}">
+          <src path="${project.src}" />
+          <classpath refid="compilation.classpath" />
+        </groovyc>
+    </target>
+
+    <!-- This target copies the required resources to the output directory. -->
+    <target name="copy.resources" depends="clean">
+        <copy todir="${project.bin}">
+          <fileset dir="${project.src}">
+            <patternset>
+                <!-- Copy both the Java OpenGL JAR files and the native
+                    library files to the output directory. -->
+                <include name="**/?*.so"/>
+                <include name="**/?*.jnilib"/>
+                <include name="**/?*.dll"/>
+
+                <!-- Copy the textures to the output directory. -->
+                <include name="**/?*.jpg"/>
+            </patternset>
+              
+            <type type="file"/>
+          </fileset>
+        </copy>
+    </target>
+
+    <target name="package" depends="clean, groovyc.compile, copy.resources">
+        <jar destfile="${project.jar}" basedir="${project.bin}" />
+    </target>
+
+    <target name="run">
+        <java classpathref="runtime.classpath" classname="${project.mainclass}" fork="true" />
+    </target>
+
+</project>
